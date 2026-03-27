@@ -1,4 +1,4 @@
-const {test} = require('@playwright/test'); // This is the new way to import test and expect in Playwright 1.30.0 and later versions
+const {test, expect} = require('@playwright/test'); // This is the new way to import test and expect in Playwright 1.30.0 and later versions
 
 // ============================================================================
 // METHOD 1: Creating a Custom Browser Context (Used for advanced scenarios)
@@ -15,23 +15,28 @@ test('Custom Browser Context Test', async ({ browser }) => {
     
     // 3. Navigate to the application.
     await page.goto('https://rahulshettyacademy.com/loginpagePractise/'); 
+    console.log(await page.title()); // This will print the title of the page to the console.
+    
 });
 
 
 // ============================================================================
 // METHOD 2: Using the Default Page Fixture (The standard, everyday approach)
 // ============================================================================
-test.only('Default Page Fixture Test', async ({ page }) => {
+test('Default Page Fixture Test', async ({ page }) => {
     
     // Playwright is smart: by passing { page } into the function, it automatically 
     // creates the Browser and Context for us behind the scenes!
 
     //test.only() is a method provided by Playwright's test runner that allows you to run only a specific test or a group of tests. 
-    // When you use test.only(), it will ignore all other tests in the file and execute only the test(s) marked with .only(). This is useful for debugging or when you want to focus on a particular test without running the entire test suite.
+    // When you use test.only(), it will ignore all other tests in the file and execute only the test(s) marked with .only(). 
+    // This is useful for debugging or when you want to focus on a particular test without running the entire test suite.
     
     // WHY use this method? This is the fastest and cleanest way to write 95% of your tests 
     // when you don't need any special browser setups or custom cookies.
-    await page.goto('https://google.com'); 
+    await page.goto('https://google.com');
+    console.log(await page.title()); // This will print the title of the page to the console.
+    await expect(page).toHaveTitle('Google'); // This is an assertion to check if the page title is 'Google'. If not, the test will fail.
 
 });
 

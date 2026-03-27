@@ -20,9 +20,11 @@ const config = ({
  
   use: {
 
-    browserName: 'chromium' // Use Chromium browser for all tests by default. You can override this in individual test files if 
-    // needed.
-   
+    browserName: 'chromium', // Use chrome browser to run all the tests by default. 
+    //browserName: 'firefox' // Use Firefox browser to run all tests by default. 
+
+    //browserName: 'webkit', // Use Safari browser to run all tests by default.
+      headless: false // Run tests in headed mode (with a visible browser window). Set to true for headless mode.
   },
 
 });
