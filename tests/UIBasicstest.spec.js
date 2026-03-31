@@ -3,7 +3,7 @@ const {test, expect} = require('@playwright/test'); // This is the new way to im
 // ============================================================================
 // METHOD 1: Creating a Custom Browser Context (Used for advanced scenarios)
 // ============================================================================
-test('Custom Browser Context Test', async ({ browser }) => {
+test.only('Browser Context Playwright Test', async ({ browser }) => {
     
     // 1. Create a fresh, isolated environment (Context).
     // WHY use this method? If you need to inject cookies, block location permissions, 
@@ -16,6 +16,19 @@ test('Custom Browser Context Test', async ({ browser }) => {
     // 3. Navigate to the application.
     await page.goto('https://rahulshettyacademy.com/loginpagePractise/'); 
     console.log(await page.title()); // This will print the title of the page to the console.
+    await page.locator('#username').fill("rahulshetty"); // This will type 'rahulshetty' into the input field with the id 'username'.
+    await page.locator("[type='password']").fill("learning");// This will type 'learning' into the input field with the id 'password'.
+    await page.locator("[type='submit']").click(); // This will click the submit button on the page.
+    
+    console.log(await page.locator("[style*='block']").textContent()); // This will print the text content of the element with a style attribute that contains 'block' to the console. This is likely used to capture and display any error messages that appear after attempting to log in with the provided credentials.
+    //await page.locator("[style*='block']").textContent().then(text => console.log(text)); // This will also print the text content of the element with a style attribute that contains 'block' to the console. This is likely used to capture and display any error messages that appear after attempting to log in with the provided credentials.
+    
+    //=======NOTE : Both the lines 23 & 24 will give the same result, but the line 23 is more concise and easier to read. The line 24 uses a promise and a then() method to achieve the same result, but it is less straightforward and can be more difficult to understand for someone who is not familiar with promises in JavaScript. Therefore, it is generally recommended to use the more concise and readable approach shown in line 23.=======
+    
+    //Error message's locator:
+    // <div class="alert alert-danger col-md-12" style="display: none;"><strong>Empty</strong> username/password.</div>
+
+    await expect(page.locator("[style*='block']")).toContainText("Incorrect"); // This is an assertion to check if the text content of the element with a style attribute that contains 'block' is 'Incorrect username/password.'. If not, the test will fail.
     
 });
 
