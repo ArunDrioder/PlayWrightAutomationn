@@ -68,7 +68,7 @@ test ('Browser Context Playwright Test', async ({ browser }) => {
 // ============================================================================
 // METHOD 2: Using the Default Page Fixture (The standard, everyday approach)
 // ============================================================================
-test.only('UI Controls', async ({ page }) => {
+test ('UI Controls', async ({ page }) => {
 
     const userName = page.locator('#username'); // This will create a locator for the input field with the id 'username'. You can use this locator to interact with the element later in your test.
     const password = page.locator("[type='password']"); // This will create a locator for the input field with the type 'password'. You can use this locator to interact with the element later in your test.
@@ -77,7 +77,7 @@ test.only('UI Controls', async ({ page }) => {
     const  radioButton = page.locator(".radiotextsty"); // This will create a locator for the element with the class 'radiotextsty'. You can use this locator to interact with the radio button later in your test, such as checking its state or clicking on it.
     const webPopUp = page.locator("#okayBtn"); // This will create a locator for the element with the class 'modal-content'. You can use this locator to interact with the web popup later in your test, such as checking its visibility or clicking on elements within it.
     const tAndC = page.locator("#terms"); // This will create a locator for the element with the id 'terms'. You can use this locator to interact with the terms and conditions checkbox later in your test, such as checking its state or clicking on it.
-
+    const documentLink = page.locator("a[href*='documents-request']"); // This will create a locator for the anchor element with an href attribute that contains 'documents-request'. You can use this locator to interact with the document request link later in your test, such as checking its visibility or clicking on it. 
 
     
     // Playwright is smart: by passing { page } into the function, it automatically 
@@ -102,13 +102,15 @@ test.only('UI Controls', async ({ page }) => {
    await tAndC.uncheck(); // This will uncheck the checkbox with the id 'terms'. You can use this locator to interact with the terms and conditions checkbox later in your test, such as checking its state or clicking on it.
    expect(await tAndC.isChecked()).toBeFalsy(); // This is another way to assert that the checkbox with the id 'terms' is not checked. The isChecked() method returns a boolean value, and toBeFalsy() checks if that value is false. If the checkbox is checked, the test will fail.
     //await page.pause(); // This will pause the test execution and open the Playwright Inspector, allowing you to interact with the page and debug your test. You can resume the test execution from the Inspector once you have finished debugging.
+    await expect(documentLink).toHaveAttribute("class","blinkingText") // This is an assertion to check if the anchor element with an href attribute that contains 'documents-request' is visible on the page. If it is not visible, the test will fail.
 
 
-   
-
-}
 
 
+    //NOTE : In some cases, the await keyword will come before the locatots & in some places, it'll be there after the expect keyword., 
+    
+    //  for eg : await expect (radioButton.last()).toBeChecked(); // Here, the await keyword is used before the expect function, bcoz the action is performed outside the bracket;
+    // but in this case : expect(await tAndC.isChecked()).toBeTruthy(); // Here, the await keyword is used inside the expect function, bcoz the action is performed inside the bracket;
 //javascript is asynchronous, it means that the code will not wait for the previous line to finish before moving on to the next line. This can lead to unexpected behavior if you are not careful. To handle this, you can use async/await syntax to make your code more readable and easier to understand.
 
     // To use async/await, you need to declare your test function as async. This allows you to use the await keyword inside the function to wait for asynchronous operations to complete before moving on to the next line of code.
@@ -120,4 +122,35 @@ test.only('UI Controls', async ({ page }) => {
  // Playwright configuration file (playwright.config.js).
 
  //we can also specify the test to run in browser using this command : npx playwright test --headed
-)
+})
+
+test.only('Child Window handling', async ({ browser }) => {
+
+    const context = await browser.newContext();
+    const page = await context.newPage();
+
+
+    await page.goto('https://rahulshettyacademy.com/loginpagePractise/');
+    const docLink = page.locator("[href*='documents-request']");
+    const [newPage] =  await Promise.all(
+        
+[  
+            
+    context.waitForEvent('page'), // This will wait for a new page to be opened as a result of clicking the document link. The waitForEvent('page') method listens for the 'page' event, which is triggered when a new page is opened in the browser context. Once the new page is opened, it will be assigned to the variable newpage, allowing you to interact with it in your test.
+
+    docLink.click(),
+
+]) // This will click the anchor element with an href attribute that contains 'documents-request', which is likely a link that opens a new page. You can use this locator to interact with the document request link later in your test, such as checking its visibility or clicking on it.
+
+ const newWindowText = await newPage.locator(".red").textContent(); // This will create a locator for the element with the class 'red' on the new page that was opened as a result of clicking the document link. The textContent() method will retrieve the text content of that element and assign it to the variable newWindowText.
+
+ const extractedText = newWindowText.split("@"); // This will split the text content of the element with the class 'red' on the new page at the "@" character, and then take the second part of the split (which is likely an email address) and trim any leading or trailing whitespace from it. This is likely used to extract the email address from the text content for further verification or use in the test.
+ const expectedText =  extractedText[1].split(" ")[0]; // This will split the second part of the previously extracted text at the first occurrence of a space character and take the first part of that split, which is likely the email address without any additional text. This is likely used to further refine the extracted email address for verification or use in the test.
+
+console.log(expectedText); // This will print the text content of the element with the class 'red' on the new page to the console. This is likely used to verify that the correct page was opened and that the expected content is present on that page.
+
+await page.locator("#username").fill(expectedText); // This will fill the input field with the id 'username' on the original page with the expected text that was extracted from the new page. This is likely used to verify that the extracted email address can be successfully entered into the username field on the original page.
+console.log(await page.locator("#username").textContent()); // This will print the text content of the input field with the id 'username' on the original page to the console. This is likely used to verify that the expected text was successfully entered into the username field.
+await page.pause(); // This will pause the test execution and open the Playwright Inspector, allowing you to interact with the page and debug your test. You can resume the test execution from the Inspector once you have finished debugging.
+})
+
