@@ -76,6 +76,7 @@ test.only('UI Controls', async ({ page }) => {
     const dropDown = page.locator("select.form-control"); // This will create a locator for the select element with the class 'form-control'. You can use this locator to interact with the dropdown menu later in your test.
     const  radioButton = page.locator(".radiotextsty"); // This will create a locator for the element with the class 'radiotextsty'. You can use this locator to interact with the radio button later in your test, such as checking its state or clicking on it.
     const webPopUp = page.locator("#okayBtn"); // This will create a locator for the element with the class 'modal-content'. You can use this locator to interact with the web popup later in your test, such as checking its visibility or clicking on elements within it.
+    const tAndC = page.locator("#terms"); // This will create a locator for the element with the id 'terms'. You can use this locator to interact with the terms and conditions checkbox later in your test, such as checking its state or clicking on it.
 
 
     
@@ -94,13 +95,18 @@ test.only('UI Controls', async ({ page }) => {
     await dropDown.selectOption("consult"); // This will select the option with the value 'consult' from the dropdown menu with the class 'form-control'.
     await radioButton.last().click(); // This will click the last element with the class 'radiotextsty', which is likely a radio button. You can use this locator to interact with the radio button later in your test, such as checking its state or clicking on it.
     await webPopUp.click(); // This will click the element with the id 'okayBtn', which is likely a button within a web popup. You can use this locator to interact with the web popup later in your test, such as checking its visibility or clicking on elements within it.
-    await page.pause(); // This will pause the test execution and open the Playwright Inspector, allowing you to interact with the page and debug your test. You can resume the test execution from the Inspector once you have finished debugging.
+    console.log(await radioButton.last().isChecked()); // This will print the text content of the last element with the class 'radiotextsty' to the console. This is likely used to verify the label or description associated with the radio button that was clicked in the previous step.
+   await expect (radioButton.last()).toBeChecked(); // This is an assertion to check if the last element with the class 'radiotextsty' (which is likely a radio button) is checked. If it is not checked, the test will fail.
+   await tAndC.click(); // This will check the checkbox with the id 'terms'. You can use this locator to interact with the terms and conditions checkbox later in your test, such as checking its state or clicking on it.
+   expect(await tAndC.isChecked()).toBeTruthy(); // This is an assertion to check if the checkbox with the id 'terms' is checked. If it is not checked, the test will fail.
+   await tAndC.uncheck(); // This will uncheck the checkbox with the id 'terms'. You can use this locator to interact with the terms and conditions checkbox later in your test, such as checking its state or clicking on it.
+   expect(await tAndC.isChecked()).toBeFalsy(); // This is another way to assert that the checkbox with the id 'terms' is not checked. The isChecked() method returns a boolean value, and toBeFalsy() checks if that value is false. If the checkbox is checked, the test will fail.
+    //await page.pause(); // This will pause the test execution and open the Playwright Inspector, allowing you to interact with the page and debug your test. You can resume the test execution from the Inspector once you have finished debugging.
 
 
    
 
-});
-
+}
 
 
 //javascript is asynchronous, it means that the code will not wait for the previous line to finish before moving on to the next line. This can lead to unexpected behavior if you are not careful. To handle this, you can use async/await syntax to make your code more readable and easier to understand.
@@ -114,4 +120,4 @@ test.only('UI Controls', async ({ page }) => {
  // Playwright configuration file (playwright.config.js).
 
  //we can also specify the test to run in browser using this command : npx playwright test --headed
-
+)
