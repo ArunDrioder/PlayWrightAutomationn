@@ -147,10 +147,8 @@ test.only('Child Window handling', async ({ browser }) => {
  const extractedText = newWindowText.split("@"); // This will split the text content of the element with the class 'red' on the new page at the "@" character, and then take the second part of the split (which is likely an email address) and trim any leading or trailing whitespace from it. This is likely used to extract the email address from the text content for further verification or use in the test.
  const expectedText =  extractedText[1].split(" ")[0]; // This will split the second part of the previously extracted text at the first occurrence of a space character and take the first part of that split, which is likely the email address without any additional text. This is likely used to further refine the extracted email address for verification or use in the test.
 
-console.log(expectedText); // This will print the text content of the element with the class 'red' on the new page to the console. This is likely used to verify that the correct page was opened and that the expected content is present on that page.
-
 await page.locator("#username").fill(expectedText); // This will fill the input field with the id 'username' on the original page with the expected text that was extracted from the new page. This is likely used to verify that the extracted email address can be successfully entered into the username field on the original page.
-console.log(await page.locator("#username").textContent()); // This will print the text content of the input field with the id 'username' on the original page to the console. This is likely used to verify that the expected text was successfully entered into the username field.
-await page.pause(); // This will pause the test execution and open the Playwright Inspector, allowing you to interact with the page and debug your test. You can resume the test execution from the Inspector once you have finished debugging.
+console.log(await page.locator("#username").inputValue()); // This will print the text content of the input field with the id 'username' on the original page to the console. This is likely used to verify that the expected text was successfully entered into the username field.
+
 })
 
