@@ -1,4 +1,5 @@
 const {test, expect} = require('@playwright/test'); // This is the new way to import test and expect in Playwright 1.30.0 and later versions
+const { text } = require('node:stream/consumers');
 
 // ============================================================================
 // METHOD 1: Creating a Custom Browser Context (Used for advanced scenarios)
@@ -124,7 +125,7 @@ test ('UI Controls', async ({ page }) => {
  //we can also specify the test to run in browser using this command : npx playwright test --headed
 })
 
-test.only('Child Window handling', async ({ browser }) => {
+test ('Child Window handling', async ({ browser }) => {
 
     const context = await browser.newContext();
     const page = await context.newPage();
@@ -152,3 +153,80 @@ console.log(await page.locator("#username").inputValue()); // This will print th
 
 })
 
+
+test.only ('End-to-End Test', async ({ browser }) => {
+    
+    const context = await browser.newContext(); 
+    const page = await context.newPage(); 
+
+    await page.goto('https://rahulshettyacademy.com/client/#/auth/login'); 
+    console.log(await page.title());
+
+    const registerLink = page.locator('p.login-wrapper-footer-text');
+    const userFirstName =  page.locator('#firstName');
+    const userLastName =  page.locator('#lastName');
+    const userEmail =  page.locator('#userEmail');
+    const userPhoneNumber = page.locator('#userMobile');
+    const maleRadioBtn = page.locator("//input[@value='Male']");
+    const userPassword = page.locator('#userPassword');
+    const userConfirmPassword = page.locator('#confirmPassword');
+    const checkBox = page.locator("//input[@type='checkbox']");
+    const registerButton = page.locator('[name="login"]')
+    const registrationSuccessValidation = page.locator('h1:has-text("Account Created Successfully")');
+    const navToLoginFromReg = page.locator(':text-is("Login")');
+    const loginButton = page.locator("#login");
+
+   
+
+
+    
+
+    // console.log(await registerLink.textContent());
+    // console.log(await registerLink.innerText());
+
+    // await registerLink.click();
+
+    // await userFirstName.fill("BeautyBujjy")
+    // await userLastName.fill ("Heyya")
+    // await userEmail.fill("thecoolbeautybujjy@gmail.com");
+    // await userPhoneNumber.fill("7402191727");
+    // await maleRadioBtn.click();
+    // await userPassword.fill("Arun@!234");
+    // await userConfirmPassword.fill("Arun@!234");
+    // await checkBox.click();
+    // await registerButton.click();
+
+    // console.log(await registrationSuccessValidation.textContent());
+
+    // await navToLoginFromReg.click();
+     const products = page.locator(".card-body");
+     const productNameToBeAdded = "ZARA COAT 3";
+     const singleItemName = page.locator(".card-body b");
+
+    await userEmail.fill("thecoolbeautybujjy@gmail.com");
+    await userPassword.fill("Arun@!234");
+    await loginButton.click();
+    await page.waitForLoadState('networkidle'); // This will wait until there are no network connections for at least 500 ms. This is useful to ensure that the page has fully loaded and all network requests have completed before proceeding with the test.
+    await singleItemName.first().waitFor(); // This will wait until the first element matching the locator is attached to the DOM and has a non-empty text content. This is useful to ensure that the element is fully loaded and ready for interaction before proceeding with the test.
+    const allProductTitles = await singleItemName.allTextContents();
+    //console.log(allProductTitles);
+    const actualProductCount = await products.count();
+    await console.log("Total number of products available in the page : " + actualProductCount);
+    await console.log("Now going to iterate through the products to find the desired product and add it to the cart...");
+
+    for (let i = 0; i < actualProductCount; ++i) {
+        if( await products.nth(i).locator("b").textContent() === productNameToBeAdded ) {
+            await console.log("Product found., adding it to the cart...");
+            await products.nth(i).locator("text= Add To Cart").click();
+            await console.log("Product added to the cart successfully!");
+            break;
+            
+        }
+
+        else {
+            await console.log("Not moved to the if block");
+        }
+    }
+    
+    await page.pause();
+})
