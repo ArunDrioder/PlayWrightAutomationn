@@ -202,6 +202,7 @@ test.only ('End-to-End Test', async ({ browser }) => {
      const products = page.locator(".card-body");
      const productNameToBeAdded = "ZARA COAT 3";
      const singleItemName = page.locator(".card-body b");
+     const cartHeaderButton = page.locator("[routerlink*='cart']");
 
     await userEmail.fill("thecoolbeautybujjy@gmail.com");
     await userPassword.fill("Arun@!234");
@@ -222,11 +223,10 @@ test.only ('End-to-End Test', async ({ browser }) => {
             break;
             
         }
+}
+await cartHeaderButton.click();
+await page.locator("div li").first().waitFor(); // This will wait until at least one element matching the locator is attached to the DOM and has a non-empty text content. This is useful to ensure that the cart page has fully loaded and the list items are ready for interaction before proceeding with the test.
+const bool = await page.locator("h3:has-text('ZARA COAT 3')").isVisible(); // This will check if the element with the tag name 'h3' that contains the text 'ZARA COAT 3' is visible on the page. If it is not visible, the test will fail. This is likely used to verify that the product was successfully added to the cart and is now visible in the cart page.
+expect(bool).toBeTruthy(); // This is an assertion to check if the boolean value stored in the variable bool is true. If it is not true, the test will fail. This is likely used to confirm that the product 'ZARA COAT 3' is indeed visible in the cart page after being added.    
 
-        else {
-            await console.log("Not moved to the if block");
-        }
-    }
-    
-    await page.pause();
 })
