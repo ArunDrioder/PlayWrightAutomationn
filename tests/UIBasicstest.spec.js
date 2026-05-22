@@ -256,5 +256,26 @@ const orderId = await page.locator(".em-spacer-1 .ng-star-inserted").textContent
 
 await console.log(orderId);
 
-await page.pause();
+await page.locator('button:has-text("ORDERS")').click(); // This will click the button that contains the text 'ORDERS', which is likely a button to navigate to the orders page. You can use this locator to interact with the orders button later in your test, such as checking its visibility or clicking on it.
+await page.locator("tbody").waitFor();
+
+const ordersTableRows = await page.locator("tbody tr");
+
+for (let i = 0; i < await ordersTableRows.count(); ++i) {
+
+    const allRowOrderIds = await ordersTableRows.nth(i).locator("th").textContent(); // This will retrieve the text content of the 'th' element within the current row of the orders table, which is likely the order ID for that row. This is used to compare with the previously extracted order ID to find the matching order in the orders table.
+
+    if(orderId.includes(allRowOrderIds))
+    {
+        await ordersTableRows.nth(i).locator("button").first().click(); // This will click the first button within the current row of the orders table, which is likely a button to view the details of that order. This is used to navigate to the order details page for the matching order ID.
+        break;
+
+    }
+}
+
+const orderDetails = await page.locator(".col-text").textContent();
+expect (orderId.includes(orderDetails)).toBeTruthy(); // This is an assertion to check if the order ID extracted from the order confirmation page includes the text content of the element with the class 'col-text' on the order details page. If it does not include this text, the test will fail. This is likely used to verify that the correct order details are displayed for the order that was placed.
+
+await page.pause(); // This will pause the test execution and open the Playwright Inspector, allowing you to interact with the page and debug your test. You can resume the test execution from the Inspector once you have finished debugging.
+
 })
