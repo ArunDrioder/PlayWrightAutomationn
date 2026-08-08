@@ -8,6 +8,7 @@ import { defineConfig, devices } from '@playwright/test';
  */
 const config = ({
   testDir: './tests',
+  
 
   // if we want to override the default timeout of 30 seconds for all tests, we can do it here in the config file. 
   // This is useful if you have some tests that are expected to take longer than the default timeout.
@@ -28,6 +29,8 @@ const config = ({
   reporter : 'html',
  
   use: {
+    
+    
 
     browserName: 'chromium', // Use chrome browser to run all the tests by default. 
     //browserName: 'firefox' // Use Firefox browser to run all tests by default. 
