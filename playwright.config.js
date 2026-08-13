@@ -8,6 +8,8 @@ import { defineConfig, devices } from '@playwright/test';
  */
 const config = ({
   testDir: './tests',
+
+  
   
 
   // if we want to override the default timeout of 30 seconds for all tests, we can do it here in the config file. 
@@ -29,6 +31,9 @@ const config = ({
   reporter : 'html',
  
   use: {
+
+     actionTimeout: 10 * 1000,
+     navigationTimeout: 30 * 1000,
     
     
 
