@@ -43,7 +43,7 @@ const config = ({
 
     //browserName: 'webkit', // Use Safari browser to run all tests by default.
       headless: false, // Run tests in headed mode (with a visible browser window). Set to true for headless mode.
-      trace:'on', // Enable tracing for all tests. This will generate trace files that can be used for debugging and analysis.
+      trace:'retain-on-failure', // Enable tracing for all tests. This will generate trace files that can be used for debugging and analysis.
      
   },
 
