@@ -276,6 +276,6 @@ for (let i = 0; i < await ordersTableRows.count(); ++i) {
 const orderDetails = await page.locator(".col-text").textContent();
 expect (orderId.includes(orderDetails)).toBeTruthy(); // This is an assertion to check if the order ID extracted from the order confirmation page includes the text content of the element with the class 'col-text' on the order details page. If it does not include this text, the test will fail. This is likely used to verify that the correct order details are displayed for the order that was placed.
 
-await page.pause(); // This will pause the test execution and open the Playwright Inspector, allowing you to interact with the page and debug your test. You can resume the test execution from the Inspector once you have finished debugging.
+//await page.pause(); // This will pause the test execution and open the Playwright Inspector, allowing you to interact with the page and debug your test. You can resume the test execution from the Inspector once you have finished debugging.
 
 })

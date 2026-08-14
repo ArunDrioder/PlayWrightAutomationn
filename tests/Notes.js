@@ -110,3 +110,10 @@
 // Actions → "Do it now" → 0 default (borrows from test clock)
 
 // Test → "How long can the whole thing run?" → 30s default, the ultimate ceiling
+
+// launch codeGen by using command : npx playwright codegen "https://someurlgoeshere.com"
+
+//In codeGen,  we can generate the code by doing actions in the browser,
+
+// to launch debug mode, we can use the command : npx playwright test --debug., Even on the debug mode, we can genrate the 
+//the locators., 

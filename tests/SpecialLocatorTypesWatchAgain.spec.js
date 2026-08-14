@@ -32,6 +32,10 @@ test ('New test level timeouts', async ({ page }) => {
     await page.getByRole("button",{name:"Submit"}).click();
     await page.getByText("Success! The Form has been submitted successfully!").isVisible();
     await slowExpect(page.getByText("Success! The Form has been submitted successfully!")).toBeVisible();
+
+// await page.getByText("ooooooooooo").isVisible();
+//     await slowExpect(page.getByText("oooooooooooooo")).toBeVisible();
+
     //All the expect assertions will wait by default for 5 seconds,
     // By specifying the timeout like this explicitly [{ timeout: 10_000 }], we can override the expect's default 5 seconds timeout., mainly useful
     //when the page takes more time to load the element that we're looking for.
