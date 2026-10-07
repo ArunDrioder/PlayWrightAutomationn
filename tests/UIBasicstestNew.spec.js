@@ -155,7 +155,7 @@ console.log(await page.locator("#username").inputValue()); // This will print th
 })
 
 
-test.only ('End-to-End Test', async ({ browser }) => {
+test ('End-to-End Test', async ({ browser }) => {
     
     const context = await browser.newContext(); 
     const page = await context.newPage(); 
@@ -225,4 +225,26 @@ test.only ('End-to-End Test', async ({ browser }) => {
      await expect(page.getByText("Thankyou for the order.")).toBeVisible(); // This will wait until the element containing the text 'Thank you for the order.' is attached to the DOM and has a non-empty text content. This is useful to ensure that the order confirmation page has fully loaded and the confirmation message is ready for interaction before proceeding with the test.
 });
 
+test.only('End-to-End Co-pilot generated', async ({ page }) => {
+    const productName = 'ZARA COAT 3';
+    const productCard = page.locator('.card-body').filter({ hasText: productName });
 
+    await page.goto('https://rahulshettyacademy.com/client/#/auth/login');
+    await page.getByPlaceholder('email@example.com').fill('thecoolbeautybujjy@gmail.com');
+    await page.getByPlaceholder('enter your passsword').fill('Arun@!234');
+    await page.locator('#login').click();
+
+    await expect(productCard).toHaveCount(1);
+    await productCard.getByRole('button', { name: 'Add To Cart' }).click();
+    await page.locator('[routerlink*="cart"]').click();
+    await expect(page.getByText(productName, { exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: 'Checkout' }).click();
+    await page.getByPlaceholder('Select Country').pressSequentially('Ind', { delay: 150 });
+    await page.getByRole('button', { name: 'India' }).nth(1).click();
+    await page.getByText('PLACE ORDER').click();
+
+    await expect(page.getByText('Thankyou for the order.')).toBeVisible();
+});
+
+ 
