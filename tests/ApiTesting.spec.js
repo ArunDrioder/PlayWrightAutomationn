@@ -1,47 +1,18 @@
 const {test, expect, request} = require('@playwright/test');
+const {ApiUtils} = require('./utils/ApiUtils');
 const loginPayload = {userEmail: "thecoolbeautybujjy@gmail.com", userPassword: "Arun@!234"}
 const orderPayload = {"orders":[{country:"India",productOrderedId:"6960eae1c941646b7a8b3ed3"}]}
-let token;
-let orderId;
+let response;
 
 test.beforeAll(async ()=>
 {
     const apiContext = await request.newContext();
-    const loginResponse = await apiContext.post("https://rahulshettyacademy.com/api/ecom/auth/login", 
-
-        {
-            data: loginPayload
-        })  
-        
-        expect(loginResponse.ok()).toBeTruthy();
-        const loginResponseJson = await loginResponse.json();
-         token = loginResponseJson.token;
-        console.log("The token is: "+" "+token)
-
-        const orderResponse = await apiContext.post("https://rahulshettyacademy.com/api/ecom/order/create-order",
-            {
-                data: orderPayload,
-                headers: {
-                    'Authorization' : token,
-                    'Content-Type': 'application/json'
-                },
-
-            })
-
-            expect(orderResponse.ok()).toBeTruthy();
-            const orderResponseJson = await orderResponse.json();
-            console.log("The Order response is:\n" + JSON.stringify(orderResponseJson, null, 2));
-            orderId = orderResponseJson.orders[0];
-
+    const apiUtils = new ApiUtils(apiContext,loginPayload);
+     response =  await apiUtils.createOrder(orderPayload);
 });
 
 
-test.beforeEach(()=>
-{
 
-
-
-})
 
 
 test.only ('End-to-End Test', async ({ browser }) => {
@@ -49,17 +20,11 @@ test.only ('End-to-End Test', async ({ browser }) => {
     const context = await browser.newContext(); 
     const page = await context.newPage(); 
 
-    //await page.goto('https://rahulshettyacademy.com/client/#/auth/login'); 
-    // console.log(await page.title());
-
-    // const userEmail =  page.locator('#userEmail');
-    // const userPassword = page.locator('#userPassword');
-    // const loginButton = page.locator("#login");
 
     await page.addInitScript(value =>{
 
         window.localStorage.setItem('token', value);
-    }, token);
+    }, response.token);
 
 
     await page.goto("https://rahulshettyacademy.com/client/");
@@ -130,7 +95,7 @@ for (let i = 0; i < await ordersTableRows.count(); ++i) {
 
     const allRowOrderIds = await ordersTableRows.nth(i).locator("th").textContent(); // This will retrieve the text content of the 'th' element within the current row of the orders table, which is likely the order ID for that row. This is used to compare with the previously extracted order ID to find the matching order in the orders table.
 
-    if(orderId.includes(allRowOrderIds))
+    if(response.orderId.includes(allRowOrderIds))
     {
         await ordersTableRows.nth(i).locator("button").first().click(); // This will click the first button within the current row of the orders table, which is likely a button to view the details of that order. This is used to navigate to the order details page for the matching order ID.
         break;
@@ -140,7 +105,7 @@ for (let i = 0; i < await ordersTableRows.count(); ++i) {
 
 const orderDetails = await page.locator(".col-text").textContent();
 await page.pause();
-expect (orderId.includes(orderDetails)).toBeTruthy(); // This is an assertion to check if the order ID extracted from the order confirmation page includes the text content of the element with the class 'col-text' on the order details page. If it does not include this text, the test will fail. This is likely used to verify that the correct order details are displayed for the order that was placed.
+expect (response.orderId.includes(orderDetails)).toBeTruthy(); // This is an assertion to check if the order ID extracted from the order confirmation page includes the text content of the element with the class 'col-text' on the order details page. If it does not include this text, the test will fail. This is likely used to verify that the correct order details are displayed for the order that was placed.
 
 //await page.pause(); // This will pause the test execution and open the Playwright Inspector, allowing you to interact with the page and debug your test. You can resume the test execution from the Inspector once you have finished debugging.
 
