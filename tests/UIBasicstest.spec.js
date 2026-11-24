@@ -4,7 +4,7 @@ const { text } = require('node:stream/consumers');
 // ============================================================================
 // METHOD 1: Creating a Custom Browser Context (Used for advanced scenarios)
 // ============================================================================
-test ('Browser Context Playwright Test', async ({ browser }) => {
+test.only ('Browser Context Playwright Test', async ({ browser }) => {
     
     // 1. Create a fresh, isolated environment (Context).
     // WHY use this method? If you need to inject cookies, block location permissions, 
@@ -17,13 +17,19 @@ test ('Browser Context Playwright Test', async ({ browser }) => {
     
     const page = await context.newPage(); 
 
-     const userName = page.locator('#username'); // This will create a locator for the input field with the id 'username'. You can use this locator to interact with the element later in your test.
+    //page.route('**/*.css', route => route.abort()); // This will intercept all network requests for CSS files and abort them, preventing them from being loaded. You can use this to test how the application behaves without CSS styling or to speed up the test execution by skipping unnecessary resources.
+    //page.route('**/*.{png,jpg,jpeg}', route => route.abort()); // This will intercept all network requests for image files (PNG, JPG, JPEG) and abort them, preventing them from being loaded. You can use this to test how the application behaves without images or to speed up the test execution by skipping unnecessary resources.
+
+
+    const userName = page.locator('#username'); // This will create a locator for the input field with the id 'username'. You can use this locator to interact with the element later in your test.
     const password = page.locator("[type='password']"); // This will create a locator for the input field with the type 'password'. You can use this locator to interact with the element later in your test.
     const signInButton = page.locator("[type='submit']"); // This will create a locator for the input field with the type 'submit'. You can use this locator to interact with the element later in your test.
     const validationElement = page.locator("[style*='block']"); // This will create a locator for the element with a style attribute that contains 'block'. You can use this locator to interact with the element later in your test, such as checking its text content or visibility.
     const cardTitle = page.locator(".card-body a"); // This will create a locator for all anchor elements within an element with the class 'card-body'. You can use this locator to interact with the elements later in your test, such as checking their text content or clicking on them.
     const dropDown = page.locator("select.form-control"); // This will create a locator for the select element with the class 'form-control'. You can use this locator to interact with the dropdown menu later in your test, such as selecting an option or checking its value.
 
+    page.on('request', request=>console.log(request.url()));// This will listen for all network requests made by the page and log their URLs to the console. You can use this to monitor the network activity of the page during the test execution.
+    page.on('response', response=>console.log(response.url(), response.status())); // This will listen for all network responses received by the page and log their URLs and statuses to the console. You can use this to monitor the network activity of the page during the test execution.
 
     // 3. Navigate to the application.
     await page.goto('https://rahulshettyacademy.com/loginpagePractise/'); 
